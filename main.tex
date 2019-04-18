@@ -99,36 +99,36 @@ tian.xueyan@u.nus.edu(A0177357R), tengda@u.nus.edu(A0177660X), zhao.tianze@u.nus
 \maketitle
 
 \begin{abstract}
-This paper presents our idea of the app: \textit{Visionary}, a voice guide app for visually handicapped people to assist them in avoiding approaching people on the street. With the help of camera, \textit{Visionary} can capture real-time images, classify objects and make voice warning to inform the user that some people are approaching. Our app adopts a state-of-the-art object detection Machine Learning model called YOLOv3 whose structure and algorithm are explained in YOLOv3 section. To determine other pedestrians moving direction and output audio, bounding boxes sizes are compared and CMU Flite Text-to-Speech Synthesis Engine is utilized. Additionally, some other plausible Machine Learning algorithms and their comparisons to YOLOv3 are shown in other Machine Learning Methods part. We believe \textit{Visionary} will have an extensive impact on the lives of visually handicapped people and their family in Singapore. 
+This paper presents our idea of the app: \textit{Visionary}, a voice guide app for visually handicapped people to assist them in avoiding approaching people on the street. With the help of camera, \textit{Visionary} can capture real-time images, classify objects and make voice warning to inform the user that some people are approaching. Our app adopts a state-of-the-art object detection Machine Learning model called YOLOv3 whose architecture and algorithm are explained in YOLOv3 section. To determine other pedestrians moving direction and output audio, bounding boxes sizes are compared and CMU Flite Text-to-Speech Synthesis Engine is utilized. Additionally, some other plausible Machine Learning algorithms and their comparisons to YOLOv3 are shown in other Machine Learning Methods part. We believe \textit{Visionary} will have an extensive impact on the lives of visually handicapped people and their family in Singapore. 
 \end{abstract}
 
 \section{Background}
 
-As of March 2017, the population of low-vision and blind residents registered to Singapore Association of the Visually Handicapped is 3814\cite{savh-data}. The Singapore government has built tactile paving in all the subway stations and most of the walking paths for visually handicapped people. For those who would like to walk on the tactile paving, in-door and out-door walking guide system based on GPS could be easily built for them, the correct route could be feedback to the visually handicapped user to ensure they are heading the correct direction. However, in this case, other pedestrians become one of the most critical uncertainty - they are not predictable. If a pedestrian does not notice the visually handicapped user, they may walk into each other which may cause severe consequences and is pretty dangerous. \\
+As of March 2017, the population of low-vision and blind residents registered to the Singapore Association of the Visually Handicapped is 3814 \cite{savh-data}. The Singapore government has built tactile paving in all the subway stations and most of the walking paths for visually handicapped people. For those who would like to walk on the tactile paving, in-door and out-door walking guide system based on GPS can be easily built for them and the correct route can be feedbacked to the visually handicapped user to ensure they are heading in the correct direction. However, in this case, other pedestrians become one of the most critical uncertainty - they are not predictable. If a pedestrian does not notice the visually handicapped user, they may walk into each other which may cause severe consequences and is pretty dangerous. \\
 
-\noindent We have implemented a system to detect approaching pedestrians with Machine Learning and translate the information to voice (Fig.~\ref{fig:demo}). Our product will act as an add-on system for the guide system for visually handicapped users to feedback real-time walking guide. With the help of our system, the blind users will be able to get more real-time conditions about the path ahead so that they can avoid danger caused by approaching pedestrians. \textit{Visionary} will help them walk faster and walk safer, improving their life quality.
+\noindent We have implemented a system to detect approaching pedestrians with Machine Learning and translate the information to voice (Fig.~\ref{fig:demo}). Our product will act as an add-on system on the guide system for visually handicapped users to offer real-time walking guide. With the help of our system, the blind users will be able to get more real-time conditions about the path ahead so that they can avoid approaching pedestrians. \textit{Visionary} will help them walk faster and walk safer, improving their life quality.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[ht]
 \hspace{0mm}
 \centering
 \includegraphics[width=0.85\linewidth,height = 0.5\linewidth]{Figure/demo1.png}
-\caption{\footnotesize{Demonstration result.}}
+\caption{\footnotesize{Our demonstration.}}
 \label{fig:demo}
 \vspace{-5mm}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{App Implementations}
-\textit{Visionary} takes sequential RGB images or video as input and outputs voice reminders for any approaching pedestrians.
+\textit{Visionary} takes sequential RGB images or video as input and outputs voice reminders of any approaching pedestrians.
 \begin{itemize}
 \item The input accepts three formats: image series, videos and real-time webcam images.
-\item The output is a voice guide. "Approaching" voice when pedestrian approaching silence otherwise.
+\item \textit{Visionary} outputs ``Approaching" voice when someone is approaching and remains silent otherwise.
 \end{itemize}
 
-\noindent The code can be found in our Github repository\footnote{https://github.com/CoderStellaJ/CS3244-ML-Project}. We choose YOLOv3 as our Machine Learning method. This algorithm can detect human objects within a short time period and achieve high accuracy, which is important for a real-time guide system. The pedestrians in input video could be detected correctly without limitation of video shooting direction, which is a must because pedestrians may come from all directions (Fig.~\ref{fig:arc}). \\
+\noindent Structure of \textit{Visionary} is displayed in (Fig.~\ref{fig:arc}) and the code can be found in our Github repository\footnote{https://github.com/CoderStellaJ/CS3244-ML-Project}. We choose YOLOv3 as our Machine Learning method. This algorithm can detect human objects within a short time period and achieve high accuracy, which is important for a real-time guide system. \\
 
-\noindent We design and implement an algorithm to detect objects moving direction. It compares the bounding box size in the current frame with the average size of the previous five frames. For each of the frame, we find the largest bounding box because we consider it as the nearest person to the user. If either width or height of the bounding box is larger than the average of previous 5 frames, we assume the object is approaching. We design this algorithm as the camera may not always capture a full-size human. During our experiments, when the user is approaching another pedestrian, the area of the bounding box may decrease because the legs of the pedestrian are not within the camera's angle of view. In this case, the width of the bounding box still increases. Thus, comparing box width or height is more reasonable. \\
+\noindent Apart from YOLOv3, we design and implement an algorithm to detect objects moving direction. It compares the bounding box size in the current frame with the average size of the previous five frames. For each of the frame, we find the largest bounding box because we consider it as the nearest person to the user. If either width or height of the bounding box is larger than the average of previous 5 frames, we assume the object is approaching. We design this algorithm as the camera may not always capture a full-size human. During our experiments, when the user is approaching another pedestrian, the area of the bounding box may decrease because the legs of the pedestrian are not within the camera's angle of view, whereas the width of the bounding box still increases. Thus, comparing box width or height is more reasonable. \\
 
-\noindent After comparing different ways of transforming text to sound, we adopt CMU Flite Text-to-Speech Synthesis Engine to generate our sound files. Those sound files are played to notify the user if \textit{Visionary} predicts someone is approaching. 
+\noindent After comparing different ways of transforming text to sound, we adopt CMU Flite Text-to-Speech Synthesis Engine to generate our sound files. Those sound files are played to notify the user when \textit{Visionary} predicts someone is approaching. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[ht]
 \hspace{-6mm}
@@ -157,10 +157,10 @@ In order to achieve our goal to help blind people navigate around, our app algor
     \item Continuously take sequential images or videos as input and generate real-time outputs consisting of object detection and classification.
     \item Keep a good balance between speed and accuracy.
 \end{itemize}
-Based on the above requirements, we finally chose YOLOv3\cite{YOLO} as the core machine learning part of our app. Compared with other Machine Learning detection systems, YOLOv3 can realize real-time detection and in the meanwhile keep relatively high Mean Average Precision(mAP)\cite{YOLO}. More details of qualitative and quantitative comparisons can be found in Other Methods and Experiments and Results section.
+Based on the above requirements, we finally chose YOLOv3 \cite{YOLOv3} as the core machine learning part of our app. Compared with other Machine Learning detection systems, YOLOv3 can realize real-time detection and in the meanwhile keep relatively high Mean Average Precision (mAP). More details of qualitative and quantitative comparisons can be found in Other Methods and Experiments and Results section.
 
 \section{YOLOv3}
-You Only Look Once(YOLO) was first introduced by \cite{YOLO}. After that, YOLO has been improved over the years and the latest version is YOLOv3\cite{YOLOv3}. In this section, we will take a closer look at its technical details.
+You Only Look Once(YOLO) was first introduced by \cite{YOLO}. After that, YOLO has been improved over the years and the latest version is YOLOv3 \cite{YOLOv3}. In this section, we will take a closer look at its technical details.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[ht]
 \hspace{-6mm}
@@ -168,15 +168,15 @@ You Only Look Once(YOLO) was first introduced by \cite{YOLO}. After that, YOLO h
 \includegraphics[width=0.85\linewidth,height = 0.5\linewidth]{Figure/gridcells.JPG}
 \caption{\footnotesize{YOLOv3 divides an image into $N*N$ grid cells.}}
 \label{fig:cells}
-\vspace{-2mm}
+\vspace{-3mm}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Grid Cell}
-YOLOv3 divides the image into $N*N$ grid cells. Each cell draws B bounding boxes at different scales and classifies object type inside each box (Fig.~\ref{fig:cells}). Every bounding box consists of the following parameters:
+YOLOv3 divides the image into $N*N$ grid cells. Each cell draws $B$ bounding boxes at different scales and classifies object type inside each box (Fig.~\ref{fig:cells}). Every bounding box consists of the following parameters:
 \begin{itemize}
-    \item $t_x$, $t_y$, $t_w$ and $t_h$, which are related to the coordinates of the box's center as well as the width and height of the box.
+    \item $x$, $y$, $w$ and $h$, which are related to the coordinates of the box's center as well as the width and height of the box.
     \item The probability that the box contains an object $P(Object)$, which is called objectness.
-    \item Class scores $P(Class_{i}|Object)$ for C class types.
+    \item Class scores $P(Class_{i}|Object)$ for $C$ class types.
 \end{itemize}
 The final prediction of YOLOv3 is encoded as a $N*N*(B*(4+1+C))$ tensor.
 
@@ -242,12 +242,12 @@ loss_{final} = loss_{loc} + loss_{obj} + loss_{class}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Inference}
-At this inference stage, final class-specific confidence for each bounding box is computed(Fig.~\ref{fig:grid}):
+At this inference stage, final class-specific confidence for each bounding box is computed (Fig.~\ref{fig:grid}):
 \begin{equation}
     conf_{class} = P(Class_{i}|Object)*P(Object) = P(Class_{i})
 \end{equation}
 
-\noindent To make sure that one object is bounded by exactly one box, \cite{YOLOv3} uses non-maximal suppression. Here is its implementation\cite{YOLOslides}:
+\noindent To make sure that one object is bounded by exactly one box, YOLOv3 uses non-maximal suppression. Here is its implementation in \cite{YOLOslides}:
 \begin{itemize}
     \item Sort the predictions by the class-specific confidence scores.
     \item Start from the prediction with the highest score, ignore or remove any current prediction if there exists a previous prediction that has the same class label and $IoU\footnote{IOU is union intersection between ground truth and predicted bounding box}$ $>$ 0.5 with the current prediction.
@@ -255,27 +255,27 @@ At this inference stage, final class-specific confidence for each bounding box i
 \end{itemize}
 
 \subsection{Interesting Behavior of YOLOv3}
-YOLOv3 is extremely fast. \cite{YOLOv3} designs the model as a unified single neural network whose performance can be optimized end-to-end directly instead of a complicated pipeline. During prediction, the bounding box coordinates and class probabilities straightly come from image pixels where we look at the image only once.\\
+YOLOv3 is extremely fast. \cite{YOLOv3} designs the model as a unified single neural network whose performance can be optimized end-to-end directly instead of a complicated pipeline. During prediction, the bounding box coordinates and class probabilities come straight from image pixels in a single shot.\\
 
 \noindent Previous region-proposal methods limit the classifier to some specific regions. Compared with them, YOLOv3 accesses to the whole image so that it demonstrates fewer background errors during prediction.\\
 
-\noindent Most object detection systems assume that class labels are mutually exclusive. However, in reality, a "pedestrian" could also be a "child". In YOLOv3, logistic classifiers replace softmax function used in other systems so that all class scores $P(Class_{i}|Object)$ don't necessarily sum up to 1 and an object can be multi-labeled\cite{YOLOdev}.
+\noindent Most object detection systems assume that class labels are mutually exclusive. However, in reality, a ``pedestrian" could also be a ``child". In YOLOv3, logistic classifiers replace softmax function used in other systems so that all class scores $P(Class_{i}|Object)$ don't necessarily sum up to 1 and an object can be multi-labeled \cite{YOLOdev}.
 
 \subsection{YOLOv3 and Our App}
 Based on assessment of several existing object detecting models, we decided to use YOLOv3, as it met our expectations and fit the requirements of our proposed application.\\
 \\
-\noindent YOLOv3 is fast. It runs significantly faster than other detection methods with comparable performance. Therefore, it can render real-time object recognition and classification, which is extremely significant in assisting visually impaired people to observe the surroundings. It balances speed and accuracy performance. In terms of detecting objects, YOLOv3 is doing well comparing its performance with human eyes. YOLOv3 is strong in a detection metric of mAP at IOU=0.5. Yet, according to \cite{Human-machine}, it is difficult for even human beings to distinguish a bounding box with IOU of 0.3 from one with IOU 0.5. Hence it is sufficient for YOLOv3 to work with IOU=0.5 and accurately detecting neighboring objects.\\
+\noindent YOLOv3 runs significantly faster than other detection methods and it can model human eyes quite well in terms of our app functionality. It helps \textit{Visionary} render real-time object recognition and classification, which is extremely significant in assisting visually impaired people to observe the surroundings. YOLOv3 is strong in a detection metric of mAP at $IOU=0.5$. According to \cite{Human-machine}, it is even difficult for even human beings to distinguish a bounding box with $IOU$ of 0.3 from one with $IOU$ of 0.5. Hence it is sufficient to use YOLOv3 in our app.\\
 
-\noindent YOLOv3 reasons globally about the image when making predictions\cite{YOLOv3}. Since we are detecting the person with the closest distance to the user, it is good to have a comprehensive overview of the surroundings. It is also easily extensible, as we can further predict objects other than persons in the same frame. Furthermore, it is good that YOLOv3 learns generalizable representations of objects, so it is less likely to break down when applied to new domains or unexpected input. \cite{YOLOv3} However, due to hardware limitations, we are not able to produce ideal outputs using our own laptops and phones although the model is theoretically competitive.
+\noindent YOLOv3 reasons globally about the image when making predictions \cite{YOLOv3}. Since we are detecting the person with the closest distance to the user, it is good to have a comprehensive overview of the surroundings. It is also easily extensible, as we can further predict objects other than persons in the same frame. Furthermore, YOLOv3 learns generalizable representations of objects, so it is less likely to break down when applied to new domains or rare objects \cite{YOLOv3}. However, due to hardware limitations, we are not able to produce fast outputs as presented in their paper using our own laptops and phones but the model is theoretically competitive.
 
 \subsection{Improvements on Current Model}
-Since our app cares about only the human object closest to the user, there might be inconsistency in the assumption if YOLOv3 uses bounding box. For instance, a person stretching his arms might be more distant but has larger bounding box size than a nearer person standing straight. In order to cope with this issue, alternatives to bounding box method could be attempted. A new approach called Mask R-CNN was proposed by \cite{Mask-RCNN}, which predicts an object mask in parallel with bounding box. Incorporating object mask in the current model would effectively reduce the probability of making wrong assumption, and hence improve application performance.
+Since our app cares about only the human object closest to the user, there might be inconsistency in the assumption when YOLOv3 uses bounding box. For instance, a person stretching his arms may actually be more distant but still has larger bounding box than a nearer person standing straight. In order to cope with this issue, alternatives to bounding box method could be attempted. A new approach called Mask R-CNN was proposed by \cite{Mask-RCNN}, which predicts an object mask in parallel with bounding box. Incorporating object mask in the current model would effectively reduce the probability of making wrong assumption, and hence improve application performance.
 
 \section{Other Machine Learning Methods}
 This section describes other possible methods and compares them with YOLOv3.
 
 \subsection{R-CNN}
-As shown in Fig.~\ref{fig:r_cnn}, R-CNN performs selective search \footnote{Selective Search is a region proposal algorithm that generates hierarchical grouping of similar regions in terms of color, texture, size and shape compatibility.} on the input images and extracts 2000 bottom-up region proposals. These 2000 candidates are fed into a large convolutional neural network(CNN) that outputs a 4096-dimensional feature vector. The extracted features are fed into an SVM \footnote{Support Vector Machine is a supervised learning method that looks at data and sorts it into one of two categories} to classify the presence of the object within that region proposal. Post-processing is used to refine the bounding boxes and eliminate duplicate detections.\\
+As shown in Fig.~\ref{fig:r_cnn}, R-CNN performs selective search\footnote{Selective Search is a region proposal algorithm that generates hierarchical grouping of similar regions in terms of color, texture, size and shape compatibility.} on the input images and extracts 2000 bottom-up region proposals. These 2000 candidates are fed into a large convolutional neural network(CNN) that outputs a 4096-dimensional feature vector. Then the extracted features are fed into an SVM\footnote{Support Vector Machine is a supervised learning method that looks at data and sorts it into one of two categories} to classify the presence of the object within that region proposal. Post-processing is used to refine the bounding boxes and eliminate duplicate detections.\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[ht]
 \hspace{0mm}
@@ -287,12 +287,12 @@ As shown in Fig.~\ref{fig:r_cnn}, R-CNN performs selective search \footnote{Sele
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\noindent Although R-CNN achieves a mean average precision(mAP) of 53.7\% on PASCAL VOC 2010, the model needs to examine 2000 region proposals and spends around 47s on each test image. Therefore, R-CNN cannot be implemented real-time.
+\noindent Although R-CNN achieves a mAP of 53.7\% on PASCAL VOC 2010, the model needs to examine 2000 region proposals and spends around 47s on each test image. Therefore, R-CNN cannot be implemented in real time.
 
 \subsection{Fast R-CNN}
 According to Fig.~\ref{fig:fast_2}, Fast R-CNN fits the entire image into a fully convolutional neural network to generate a feature map. It then performs selective search algorithm on the feature map to identify region proposals and uses RoI pooling\footnote{A pooling layer which performs max pooling on inputs of non-uniform sizes and produces a small feature map of fixed size.} layer to reshape them into the required size. The network has two output vectors per RoI: namely softmax probabilities and per-class bounding-box regression offsets.\\
 
-\noindent By experiment, although Fast R-CNN offers speed and accuracy improvement over R-CNN, it still falls short of real-time detection.
+\noindent Empirically, although Fast R-CNN offers speed and accuracy improvement over R-CNN, it still falls short of real-time detection.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[ht]
 \hspace{0mm}
@@ -307,7 +307,7 @@ According to Fig.~\ref{fig:fast_2}, Fast R-CNN fits the entire image into a full
 % \noindent YOLO can see the whole image so its detection and classification involves contexture information.\\
 
 \subsection{Faster R-CNN}
-The distinctive difference between Faster R-CNN and Fast R-CNN is that it does not use selective search to generate region proposals. In Faster R-CNN algorithm, a region proposal network (RPN) is used to create region proposals. \cite{fasterRcnn}\\
+Faster R-CNN employs a region proposal network to replace the selective search algorithm for generating region proposals \cite{fasterRcnn}.\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[ht]
     \hspace{-17mm}
@@ -319,15 +319,15 @@ The distinctive difference between Faster R-CNN and Fast R-CNN is that it does n
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\noindent The region proposal network is a convolutional neural network, which takes in feature map as an input. A $3 \times 3$ window with depth $K$ is slid through the feature map, outputting a vector with 256 features for each window. These features are fed into 2 fully-connected layers, box-regression layer and box-classification layer, to compute the boundary box. Then, the output region proposals are fed into the RoI pooling layer in the Fast R-CNN algorithm. (Fig.~\ref{fig:rpn})\\
+\noindent The region proposal network is a convolutional neural network, which takes in feature map as an input. A $3 \times 3$ window with depth $K$ slides through the feature map, outputting a vector with 256 features for each window. These features are fed into 2 fully-connected layers, box-regression layer and box-classification layer to compute the boundary box. Then, the output region proposals are fed into the RoI pooling layer in the Fast R-CNN algorithm (Fig.~\ref{fig:rpn}).\\
 
 \noindent 
 Faster R-CNN reduces the object detection time to 0.2 seconds, as the time-consuming step of selective search is replaced by region proposal network. Compared to YOLOv3, it has higher correctness but longer detection time.
 
 \subsection{Deformable Parts Model}
-\noindent DPM can detect and localize objects with a mixture of the graphical model of deformable parts\cite{DPM}. The model contains three important components. First, a root filter constructs a detection window that approximately covers the locations of the objects. Then, smaller parts of the object will be covered by multiple part filters. These part filters are learned at twice the resolution of the root filter. Finally, a spatial model is used to score the locations of part filters relative to the root.\\
+\noindent DPM can detect and localize objects with a mixture of the graphical model of deformable parts \cite{DPM}. The model contains three important components. First, a root filter constructs a detection window that approximately covers the locations of the objects. Then, smaller parts of the object will be covered by multiple part filters. These part filters are learned at twice the resolution of the root filter. Finally, a spatial model is used to score the locations of part filters relative to the root.\\
 
-\noindent Fig.\ref{fig:DPM_2} illustrates how DPM matching process works in details. However, the performance of DPM in some experiments(Fig.~\ref{fig:R_1}) shows that either the speed or the accuracy is worse than YOLOv3.\\
+\noindent Fig.\ref{fig:DPM_2} illustrates how DPM matching process works in details. However, the performance of DPM in some experiments (Fig.~\ref{fig:R_1}) shows that the speed and accuracy are worse than YOLOv3.\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[ht]
 \hspace{-18mm}
@@ -340,7 +340,7 @@ Faster R-CNN reduces the object detection time to 0.2 seconds, as the time-consu
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{RetinaNet}
-Lin et al (\citeyear{retinaNet}) introduced RetinaNet, a one-stage detector with a new-designed focal loss as loss function, ResNet+FPN as the backbone for feature extraction, plus two task-specific sub-networks for classification and bounding box regression.\\
+\citeyear{retinaNet} introduced RetinaNet, a one-stage detector with a new-designed focal loss as loss function, ResNet+FPN as the backbone for feature extraction, plus two task-specific sub-networks for classification and bounding box regression.\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[ht]
 \hspace{-16mm}
@@ -352,14 +352,14 @@ Lin et al (\citeyear{retinaNet}) introduced RetinaNet, a one-stage detector with
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\noindent Focal loss is a loss function resembling cross entropy loss, but it is reshaped to down-weight easy example and focus training on hard negative samples. Feature Pyramid Network (FPN) is originally a two-stage detector providing both bottom-up and top-down pathways(Fig.~\ref{fig:retinanet}). Bottom-up pathway extracts features, and top-down pathway combines features with layers in bottom-up pathway. Classification sub-net predicts of the presence of objects and box regression sub-net computes the bounding box.\\
+\noindent Focal loss is a loss function resembling cross entropy loss, but it is reshaped to down-weight easy example and focus training on hard negative samples. Feature Pyramid Network (FPN) is originally a two-stage detector providing both bottom-up and top-down pathways (Fig.~\ref{fig:retinanet}). Bottom-up pathway extracts features, and top-down pathway combines features with layers in bottom-up pathway. Classification sub-net predicts the presence of objects and box regression sub-net computes the bounding box locations.\\
 
-\noindent Compared to YOLOv3, RetinaNet has slightly higher prediction accuracy, but longer detection time.
+\noindent Compared to YOLOv3, RetinaNet has slightly higher prediction accuracy, but clearly longer detection time.
 
 \section{Experiments and Results}
 This section shows the results of experiments and quantitative comparisons with other methods.\\
 
-\noindent After applying YOLO, R-CNN and DPM on the VOC 2007, Picasso, and People-Art Datasets, the result shows that YOLO has the best performance(Fig.~\ref{fig:R_1}) in AP value which means it has better accuracy than the other two models.
+\noindent After applying YOLO, R-CNN and DPM on the VOC 2007, Picasso, and People-Art Datasets, the result shows that YOLO has the best performance(Fig.~\ref{fig:R_1}) in AP\footnote{AP is average precision} value which means it has the best accuracy among the 3 models.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[ht]
@@ -371,7 +371,7 @@ This section shows the results of experiments and quantitative comparisons with 
 \vspace{-2mm}
 \end{figure}\footnotetext{F1 score is a measure of a test's accuracy}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\noindent According to the result of applying Faster R-CNN, RetinaNet and YOLOv3 on MS CoCo Dataset, RetinaNet has the best accuracy (Fig.~\ref{fig:R_2}). However, viewed from inference time YOLOv3 is much faster than RetinaNet (Fig.~\ref{fig:R_3}).
+\noindent According to the result of applying Faster R-CNN, RetinaNet and YOLOv3 on MS CoCo Dataset, RetinaNet has the best accuracy (Fig.~\ref{fig:R_2}). However, in inference time aspect, YOLOv3 is much faster than RetinaNet (Fig.~\ref{fig:R_3}).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[ht]
 \hspace{-10mm}
@@ -405,12 +405,12 @@ Since our app mainly focuses on human object detection, we are keen to find data
 \section{Future Work}
 In the future, \textit{Visionary} can be further developed to provide more reliable, accurate and complete services.\\
 
-\noindent The framework should be further optimized for phone and achieve faster real-time output. Now, due to hardware constraints of the laptops, our demonstration still lags behind real-time performance. But a good existing example is app \textit{iDetection} available on Apple App Store. This app simply builds YOLOv3 on iPhone and it works with low latency. Ideally, \textit{Visionary} is expected to be developed to perform real-time tasks.\\ 
+\noindent The framework should be further optimized for phone and achieve faster real-time output. Now, due to hardware constraints of the laptops, our demonstration still lags behind real-time performance. But a good existing example is app \textit{iDetection} available on Apple App Store. This app simply builds YOLOv3 on iPhone and it works with low latency. Ideally, \textit{Visionary} is expected to be developed to perform real-time tasks on phone.\\ 
 
-\noindent Currently, \textit{Visionary} outputs voice when bounding box size increases. But when a pedestrian is very far from the user, the voice guide should ignore the person even if he is approaching. To resolve this problem and offer a more complete solution, camera needs to take both RGB and depth information. With depth images, the distance from the user to the person can be retrieved and \textit{Visionary} won't warn the user when obstacle is far away. On Apple Store, a tool \textit{Depth Cam - Depth Editor} capturing depth images is found. Thus, we will integrate its functionality to \textit{Visionary}.
+\noindent Currently, \textit{Visionary} outputs voice when bounding box size increases. But when a pedestrian is very far from the user, \textit{Visionary} should ignore the person even if he is approaching. To resolve this problem and offer a more complete solution, camera needs to take both RGB and depth information. With depth images, the distance from the user to the person can be retrieved and \textit{Visionary} won't warn the user when obstacle is far away. On Apple Store, a tool \textit{Depth Cam - Depth Editor} capturing depth images is found. Thus, we will integrate its functionality to \textit{Visionary}.
 
 \section{Team work}
-\subsection{Work Allocation and Reflections}
+\subsection{Work Allocation}
 \begin{table}[ht!]
 \centering
 \resizebox{1\linewidth}{!}
@@ -432,10 +432,10 @@ Zhao Tianze & Application developer\\ \hline
 \label{tab:time}\vspace{-1em}
 \end{table}
 
-%\subsection{Reflections}
+\subsection{Reflections}
 \begin{itemize}
     \item {\textbf{Jin Shuyuan}}
-Deep Learning takes rigorous experiments and experiences.
+I feel lucky to work in this team because everyone is trying to contribute. And I found that Deep Learning takes rigorous experiments and experiences.
 \item{\textbf{Mou Ziyang}}
 I find it was exciting to find out how fast machine learning models are updated.
 \item{\textbf{Tian Xin}}
@@ -453,5 +453,6 @@ Compared with other algorithms, machine learning usually produce high accuracy r
 \bibliography{References.bib}
 
 \end{document}
+
 %After we discussed about the different applications of machine learning, 
 %After I worked with the YOLOv3 model, I found that the input of this model is agile - it accept different resolution of images as input, also accept video and webcam. It also provided different weight for user to find the best balance between speed and accuracy. These features made the YOLOv3 model suitable for all kind of devices. It is possible to apply it in a portable light-weight device to serve visually handicapped better.%
